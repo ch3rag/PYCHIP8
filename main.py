@@ -33,7 +33,13 @@ def main():
                         help = "Path To ROM File")
     args = parser.parse_args()
     # TODO: Verify ROM Path
-    cpu = CPU(args.rom_path)
+    cpu = CPU(640, 320, "CHIP8EMU")
+    cpu.load_rom(args.rom_path)
+    while not cpu.has_exit:
+        cpu.dispatch_events()
+        cpu.cycle()
+        cpu.draw_graphics()
 
 if __name__ == "__main__":
     main()
+
