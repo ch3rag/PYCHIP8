@@ -24,7 +24,7 @@
 
 import argparse
 from CPU import CPU
-
+cpu = CPU(640, 320, "CHIP8EMU")
 def main():
     parser = argparse.ArgumentParser(description = "Chip-8 Emulator")
     parser.add_argument("rom_path",
@@ -33,13 +33,17 @@ def main():
                         help = "Path To ROM File")
     args = parser.parse_args()
     # TODO: Verify ROM Path
-    cpu = CPU(640, 320, "CHIP8EMU")
     cpu.load_rom(args.rom_path)
-    while not cpu.has_exit:
-        cpu.dispatch_events()
+    i = 0
+    while i < 300:
+        #cpu.dispatch_events()
+        print(cpu.pc, end = ': ')
         cpu.cycle()
-        cpu.draw_graphics()
+        #cpu.draw_graphics()
+        i += 1
 
+    print(cpu.memory)
+    print(cpu.register_set)
 if __name__ == "__main__":
     main()
 

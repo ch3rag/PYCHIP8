@@ -128,57 +128,57 @@ class CPU(pyglet.window.Window):
         try:
             self.func_map[opcode]()
         except:
-            # log"Invalid Instruction _0000: %X" % opcode)
+            log("Invalid Instruction _0000: %X" % opcode)
             pass
 
     def _00E0(self):
         # Clears the screen
-        # log"Clears the screen 0x00E0")
+        log("Clears the screen 0x00E0")
         self.display_buffer = [0] * 64 * 32
         self.draw = True
 
     def _00EE(self):
         # Return from a subroutine
-        # log"Return from a sub routine: 0x00EE")
+        log("Return from a sub routine: 0x00EE")
         self.pc = self.stack.pop()
     
     def _1000(self):
         # Set PC to XXX
-        # log"Set PC to XXX: 0x1000")
+        log("Set PC to XXX: 0x1000")
         self.pc = self.instruction & 0x0fff
     
     def _2000(self):
         # Call to a subroutine
-        # log"Call Subroutine: 0x2000")
+        log("Call Subroutine: 0x2000")
         self.stack.append(self.pc)
         self.pc = self.instruction & 0x0fff
     
     def _3000(self):
         # Skip next instruction if Vx = Lower Byte
-        # log"Skip next instruction if Vx = Lower Byte: 0x3000")
+        log("Skip next instruction if Vx = Lower Byte: 0x3000")
         if self.register_set[self.vx] == self.instruction & 0x00ff:
             self.pc += 2
     
     def _4000(self):
         # Skip next instruction if Vx != Lower Byte
-        # log"Skip next instruction if Vx != Lower Byte: 0x4000")
+        log("Skip next instruction if Vx != Lower Byte: 0x4000")
         if self.register_set[self.vx] != self.instruction & 0x00ff:
             self.pc += 2
     
     def _5000(self):
         # Skip next instruction if Vx = Vy
-        # log"Skip next instruction if Vx = Vy: 0x5000")
+        log("Skip next instruction if Vx = Vy: 0x5000")
         if self.register_set[self.vx] == self.register_set[self.vy]:
             self.pc += 2
     
     def _6000(self):
         # Load lower Byte into Vx
-        # log"Load lower Byte into Vx: 0x6000")
+        log("Load lower Byte into Vx: 0x6000")
         self.register_set[self.vx] = self.instruction & 0x00ff
 
     def _7000(self):
         # Set Vx = Vx + Lower Byte
-        # log"Set Vx = Vx + Lower Byte: 0x7000")
+        log("Set Vx = Vx + Lower Byte: 0x7000")
         self.register_set[self.vx] += self.instruction & 0x00ff
         self.register_set[self.vx] &= 0x00ff
     
@@ -188,36 +188,36 @@ class CPU(pyglet.window.Window):
         try:
             self.func_map[opcode]()
         except:
-            # log"Invalid Instruction _8000: %X" % opcode)
+            log("Invalid Instruction _8000: %X" % opcode)
             pass
     
     def _8FF0(self):
         # Set Vx = Vy
-        # log"Set Vx = Vy: 0x8FF0")
+        log("Set Vx = Vy: 0x8FF0")
         self.register_set[self.vx] = self.register_set[self.vy]
         self.register_set[self.vx] &= 0xff
 
     def _8FF1(self):
         # Set Vx = Vx | Vy
-        # log"Set Vx = Vx | Vy: 0x8FF1")
+        log("Set Vx = Vx | Vy: 0x8FF1")
         self.register_set[self.vx] |= self.register_set[self.vy]
         self.register_set[self.vx] &= 0xff
     
     def _8FF2(self):
         # Set Vx = Vx & Vy
-        # log"Set Vx = Vx & Vy: 0x8FF2")
+        log("Set Vx = Vx & Vy: 0x8FF2")
         self.register_set[self.vx] &= self.register_set[self.vy]
         self.register_set[self.vx] &= 0xff
     
     def _8FF3(self):
         # Set Vx = Vx XOR Vy
-        # log"Set Vx = Vx XOR Vy: 0x8FF3")
+        log("Set Vx = Vx XOR Vy: 0x8FF3")
         self.register_set[self.vx] ^= self.register_set[self.vy]
         self.register_set[self.vx] &= 0xff
     
     def _8FF4(self):
         # Set Vx = Vx + Vy With Carry
-        # log"Set Vx = Vx + Vy With Carry: 0x8FF4")
+        log("Set Vx = Vx + Vy With Carry: 0x8FF4")
         addition = self.register_set[self.vx] + self.register_set[self.vy]
         if addition > 0xff:
             self.register_set[0xf] = 0x1
@@ -227,7 +227,7 @@ class CPU(pyglet.window.Window):
     
     def _8FF5(self):
         # Vx = Vx - Vy and set Vy = 0 if Borrow
-        # log"Vx = Vx - Vy and set Vy = 0 if Borrow: 0x8FF5")
+        log("Vx = Vx - Vy and set Vy = 0 if Borrow: 0x8FF5")
         # TODO : Cleanup
         if self.register_set[self.vy] > self.register_set[self.vx]: 
             self.register_set[0xf] = 0
@@ -238,13 +238,13 @@ class CPU(pyglet.window.Window):
 
     def _8FF6(self):
         # SHR Vx By 1 and Set Vy = 1 if LSB of Vx = 1
-        # log"SHR Vx By 1 and Set Vy = 1 if LSB of Vx = 1: 0x8FF6")
+        log("SHR Vx By 1 and Set Vy = 1 if LSB of Vx = 1: 0x8FF6")
         self.register_set[0xf] = self.register_set[self.vx] & 0x0001
         self.register_set[self.vx] >>= 1
 
     def _8FF7(self):
         # Set Vx = Vx - Vy and set Vy = 1 if Borrow
-        # log"Set Vx = Vx - Vy and set Vy = 1 if Borrow: 0x8FF7")
+        log("Set Vx = Vx - Vy and set Vy = 1 if Borrow: 0x8FF7")
         # TODO : Cleanup
         if self.register_set[self.vx] > self.register_set[self.vy]: 
             self.register_set[0xf] = 0
@@ -255,38 +255,38 @@ class CPU(pyglet.window.Window):
     
     def _8FFE(self):
         # SHL Vx By 1 and set Vy = 1 if MSB of Vx = 1
-        # log"SHL Vx By 1 and set Vy = 1 if MSB of Vx = 1: 0x8FFE")
+        log("SHL Vx By 1 and set Vy = 1 if MSB of Vx = 1: 0x8FFE")
         self.register_set[0xf] = (self.register_set[self.vx] & 0x0080) >> 7
         self.register_set[self.vx] <<= 1
         self.register_set[self.vx] &= 0xff
     
     def _9000(self):
         # Skip Next Instruction If Vx != Vy
-        # log"Skip Next Instruction If Vx != Vy: 0x9000")
+        log("Skip Next Instruction If Vx != Vy: 0x9000")
         if self.register_set[self.vx] != self.register_set[self.vy]:
             self.pc += 2
     
     def _A000(self):
         # Set Index Register to nnn in Annn
-        # log"Set Index Register to nnn in Annn: 0xA000")
+        log("Set Index Register to nnn in Annn: 0xA000")
         self.index = self.instruction & 0x0fff
     
     def _B000(self):
         # Set PC = V0 + (nnn in Bnnn)
-        # log"Set PC = V0 + (nnn in Bnnn): 0xB000")
+        log("Set PC = V0 + (nnn in Bnnn): 0xB000")
         self.pc = (self.instruction & 0x0fff) + self.register_set[0]
     
     def _C000(self):
         # TODO : Test Overflow
         # Set Vx = Random(255) & (kk in Cxkk)
-        # log"Set Vx = Random(255) & (kk in Cxkk): 0xC000")
+        log("Set Vx = Random(255) & (kk in Cxkk): 0xC000")
         rnd_num = randint(0, 255)
         self.register_set[self.vx] = rnd_num & (self.instruction & 0x00ff)
         self.register_set[self.vx] &= 0xff
     
     def _D000(self):
         # Draw a sprite at Vx, Vy
-        # log"Draw a sprite at Vx, Vy: 0xD000")
+        log("Draw a sprite at Vx, Vy: 0xD000")
         # Dxyn - DRW Vx, Vy, nibble
         # Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
         # The interpreter reads n bytes from memory, starting at the address stored in I. 
@@ -318,19 +318,19 @@ class CPU(pyglet.window.Window):
         try:
             self.func_map[opcode]()
         except:
-            # log"Invalid Instruction _E000: %4X" % opcode)
+            log("Invalid Instruction _E000: %4X" % opcode)
             pass
     
     def _E09E(self):
         # Skip next instruction if key stored in Vx is pressed
-        # log"Skip next instruction if key stored in Vx is pressed: 0xE09E")
+        log("Skip next instruction if key stored in Vx is pressed: 0xE09E")
         key = self.register_set[self.vx] & 0xf
         if self.key_inputs[key] == 1:
             self.pc += 2
     
     def _E0A1(self):
         # Skip next instruction if key stored in Vx is not pressed
-        # log"Skip next instruction if key stored in Vx is not pressed: 0xE0A1")
+        log("Skip next instruction if key stored in Vx is not pressed: 0xE0A1")
         key = self.register_set[self.vx] & 0xf
         if self.key_inputs[key] == 0:
             self.pc += 2
@@ -340,17 +340,17 @@ class CPU(pyglet.window.Window):
         try:
             self.func_map[opcode]()
         except:
-            # log"Invalid Instruction _F000: %4X" % opcode)
+            log("Invalid Instruction _F000: %4X" % opcode)
             pass
     
     def _F007(self):
         # Set Vx = Delay Timer
-        # log"Set Vx = Delay Timer: 0xF007")
+        log("Set Vx = Delay Timer: 0xF007")
         self.register_set[self.vx] = self.delay_timer
     
     def _F00A(self):
         # Wait for the key and set Vx = Key
-        # log"Wait for the key and set Vx = Key: 0xF00A")
+        log("Wait for the key and set Vx = Key: 0xF00A")
         # TODO : Implement get_key()
         key = self.get_key()
         if key >= 0:
@@ -360,17 +360,17 @@ class CPU(pyglet.window.Window):
     
     def _F015(self):
         # Set Delay Timer = Vx
-        # log"Set Delay Timer = Vx: 0xF015")
+        log("Set Delay Timer = Vx: 0xF015")
         self.delay_timer = self.register_set[self.vx]
     
     def _F018(self):
         # Set Sound Timer = Vx
-        # log"Set Sound Timer = Vx: 0xF018")
+        log("Set Sound Timer = Vx: 0xF018")
         self.sound_timer = self.register_set[self.vx]
 
     def _F01E(self):
         # Set I = I + Vx. If Overflow Vf = 1
-        # log"Set I = I + Vx. If Overflow Vf = 1: 0xF01E")
+        log("Set I = I + Vx. If Overflow Vf = 1: 0xF01E")
         self.index += self.register_set[self.vx]
         if self.index > 0xfff:
             self.index &= 0xfff
@@ -380,12 +380,12 @@ class CPU(pyglet.window.Window):
 
     def _F029(self):
         # Set Index = Location of Hex Sprite Stored in memory for digit stored in Vx
-        # log"Set Index = Location of Hex Sprite Stored in memory for digit stored in Vx: 0xF029")
+        log("Set Index = Location of Hex Sprite Stored in memory for digit stored in Vx: 0xF029")
         self.index = (5 * self.register_set[self.vx]) & 0xfff
     
     def _F033(self):
         # Store BCD Represention of Vx In Memory at I, I+1, I+2
-        # log"Store BCD Represention of Vx In Memory at I, I+1, I+2: 0xF033")
+        log("Store BCD Represention of Vx In Memory at I, I+1, I+2: 0xF033")
         number = self.register_set[self.vx]
         self.memory[self.index]     = int(number / 100)
         self.memory[self.index + 1] = int((number / 10) % 10)
@@ -393,13 +393,13 @@ class CPU(pyglet.window.Window):
 
     def _F055(self):
         # Store the values of Registers V0 to Vx in memory starting at location Index
-        # log"Store the values of Registers V0 to Vx in memory starting at location Index: 0xF055")
+        log("Store the values of Registers V0 to Vx in memory starting at location Index: 0xF055")
         for i in range(0, self.vx + 1):
             self.memory[self.index + i] = self.register_set[i]
     
     def _F065(self):
         # Load the Registers V0 to Vx from memory starting at location Index
-        # log"Load the Registers V0 to Vx from memory starting at location Index: 0xF065")
+        log("Load the Registers V0 to Vx from memory starting at location Index: 0xF065")
         for i in range(0, self.vx + 1):
             self.register_set[i] = self.memory[self.index + i]
 
